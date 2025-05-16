@@ -1,0 +1,48 @@
+# ignore .gitignore itself
+#.gitignore
+
+# ignore Mac temp files
+._*
+.DS_Store
+*~
+
+# ignore build files and IDE temp
+cmake-build*/
+.idea/
+.vscode/
+build/
+Builds/
+
+# ignore juce library and builds
+Builds
+JuceLibraryCode
+
+# ignore keil builds
+# exclude mdk build outputs
+**/mdk/*release
+**/mdk/*debug
+**/mdk/*output
+
+# exclude mdk config files
+**/mdk/*uvgui*
+**/mdk/*uvoptx*
+**/mdk/*JLink*
+
+# ignore Windows temp files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.bak
+*.tmp
+*.swp
+*.swo
+*.lnk
+
+# ignore Windows cache/log
+*.log
+*.dmp
+*.obj
+
+# ignore Windows system files
+*.~*
