@@ -13,6 +13,8 @@ cmake-build*/
 build/
 Builds/
 
+Engineering_test/
+
 # ignore juce library and builds
 Builds
 JuceLibraryCode
