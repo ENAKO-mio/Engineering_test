@@ -1,3 +1,16 @@
+/*
+ * @file      signal_processor.cpp
+ * @brief     Implements audio signal processing in streaming or batch mode.
+ * @details
+ *            - Provides an interface for signal processing with selectable modes (streaming or batch).
+ *            - In streaming mode, processes the input signal in fixed-size buffers.
+ *            - In batch mode, processes the entire signal at once.
+ *            - Supports buffer management and displays final processing results.
+ * @author    Erick
+ * @date      2025.5
+ */
+
+
 #include "signal_processor.h"
 #include <iostream>
 #include <algorithm>
@@ -33,30 +46,42 @@ void SignalProcessor::processSignal(const std::vector<double>& signal,
         processWhole(signal);
     }
 
-    // Show final processing results
+ 
     displayResults();
 }
 
 // Process a single buffer (used in streaming mode)
 void SignalProcessor::processBuffer(const std::vector<double>& buffer) {
+
+
     // Handle processing for one buffer
     // Example:
     // std::string resultStr = processor.processSignal(buffer, mainComponent);
     // ... (additional processing if needed)
+
+
 }
 
 // Process the whole signal at once (used in batch mode)
 void SignalProcessor::processWhole(const std::vector<double>& signal) {
+
+
     // Handle processing for the entire signal
     // Example:
     // std::string resultStr = processor.processSignal(signal, mainComponent);
     // ... (additional processing if needed)
+
+
 }
 
 // Display final results after processing
 void SignalProcessor::displayResults() {
     std::cout << "Final results:" << std::endl;
+
+
     // Example:
     // mainComponent.displayChordResults();
+
+
     std::cout << "\n\n" << std::endl;
 }

@@ -1,3 +1,14 @@
+/*
+ * @file      sim_signal.cpp
+ * @brief     Implements functions to generate synthetic audio signals.
+ * @details
+ *            - Generates single-frequency sine waves.
+ *            - Generates chords by combining multiple sine waves.
+ *            - Generates white noise signals with specified amplitude.
+ * @author    Erick
+ * @date      2025.5
+ */
+
 #include "sim_signal.h"
 #include <cmath>
 #include <random>

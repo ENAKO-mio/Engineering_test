@@ -1,3 +1,16 @@
+/*
+ * @file      wav_processor.cpp
+ * @brief     Implements reading, processing, and writing of WAV audio files.
+ * @details
+ *            - Provides functions to read WAV files into normalized floating-point vectors.
+ *            - Supports PCM WAV files with 8, 16, or 24 bits per sample.
+ *            - Includes basic audio processing (e.g., volume adjustment).
+ *            - Supports writing processed audio data back to WAV files.
+ * @author    Erick
+ * @date      2025.5
+ */
+
+
 #include <iostream>
 #include <fstream>
 #include <cmath>
@@ -7,52 +20,48 @@
 
 #include "wav_processor.h"
 
-
-
 std::vector<double> readWAV(const std::string& filename, WAVHeader& header) {
     std::ifstream file(filename, std::ios::binary);
     if (!file.is_open()) {
-        throw std::runtime_error("无法打开文件: " + filename);
+        throw std::runtime_error("Unable to open file: " + filename);
     }
 
     file.read(reinterpret_cast<char*>(&header), sizeof(WAVHeader));
 
     if (std::string(header.riff, 4) != "RIFF" || std::string(header.wave, 4) != "WAVE") {
-        throw std::runtime_error("不是有效的WAV文件");
+        throw std::runtime_error("Not a valid WAV file");
     }
 
     if (header.audioFormat != 1) {
-        throw std::runtime_error("不支持的音频格式（仅支持PCM）");
+        throw std::runtime_error("Unsupported audio format (only PCM supported)");
     }
 
     std::vector<double> audioData;
-    audioData.reserve(header.dataSize / (header.bitsPerSample / 8));  // 计算音频文件中有多少个音频样本
+    audioData.reserve(header.dataSize / (header.bitsPerSample / 8));  // Calculate the number of audio samples in the file
 
     std::vector<char> buffer(header.dataSize);
     file.read(buffer.data(), header.dataSize);
 
-
-
-    for (size_t i = 0; i < buffer.size(); i += header.bitsPerSample / 8)  // 位深度除以 8，将位深度转换为字节数,1字节 = 8位;i 的值跳过一个完整的音频样本的字节数，指向下一个样本的开始位置。
+    for (size_t i = 0; i < buffer.size(); i += header.bitsPerSample / 8)  // Bit depth divided by 8 converts bits to bytes, 1 byte = 8 bits; i skips the bytes for one complete audio sample, pointing to the start of the next sample.
     {
         double sample = 0;
         if (header.bitsPerSample == 8) {
             sample = static_cast<double>(static_cast<uint8_t>(buffer[i])) / 128.0 - 1.0;
-            // 将当前字节数据转换为 uint8_t（无符号 8 位整数）,再将这个无符号整数转换为 double 型，最后归一化
+            // Convert current byte data to uint8_t (unsigned 8-bit integer), then to double, and finally normalize
         }
         else if (header.bitsPerSample == 16) {
             sample = static_cast<double>(*reinterpret_cast<int16_t*>(&buffer[i])) / 32768.0;
-            // 从 buffer[i] 开始的 两个字节 被解释为一个 16 位有符号整数
+            // The two bytes starting from buffer[i] are interpreted as a 16-bit signed integer
         }
         else if (header.bitsPerSample == 24) {
             int32_t sample24 = (static_cast<uint8_t>(buffer[i]) |
                 (static_cast<uint8_t>(buffer[i + 1]) << 8) |
                 (static_cast<uint8_t>(buffer[i + 2]) << 16));
-            if (sample24 & 0x800000) sample24 |= 0xFF000000; // 符号扩展
+            if (sample24 & 0x800000) sample24 |= 0xFF000000; // Sign extension
             sample = static_cast<double>(sample24) / 8388608.0;
         }
         else {
-            throw std::runtime_error("不支持的位深度");
+            throw std::runtime_error("Unsupported bit depth");
         }
         audioData.push_back(sample);
     }
@@ -61,7 +70,7 @@ std::vector<double> readWAV(const std::string& filename, WAVHeader& header) {
 }
 
 void processSignal(std::vector<double>& signal) {
-    // 调整音量
+    // Adjust the volume
     for (auto& sample : signal) {
         sample *= 1.5;
     }
@@ -70,13 +79,13 @@ void processSignal(std::vector<double>& signal) {
 void writeWAV(const std::string& filename, const WAVHeader& header, const std::vector<float>& audioData) {
     std::ofstream file(filename, std::ios::binary);
     if (!file.is_open()) {
-        throw std::runtime_error("无法创建文件: " + filename);
+        throw std::runtime_error("Unable to create file: " + filename);
     }
 
-    // 写入WAV文件头
+    // Write WAV file header
     file.write(reinterpret_cast<const char*>(&header), sizeof(WAVHeader));
 
-    // 将浮点数据转换回原始格式并写入文件
+    // Convert floating point data back to raw format and write to file
     for (const auto& sample : audioData) {
         switch (header.bitsPerSample) {
         case 8: {
@@ -100,7 +109,7 @@ void writeWAV(const std::string& filename, const WAVHeader& header, const std::v
             break;
         }
         default:
-            throw std::runtime_error("不支持的位深度");
+            throw std::runtime_error("Unsupported bit depth");
         }
     }
 }

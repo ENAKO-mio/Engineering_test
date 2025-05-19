@@ -1,30 +1,34 @@
+/*
+ * @file      signal_source.cpp
+ * @brief     Provides signal source selection and signal generation functions.
+ * @details
+ *            - Allows user to select the type of signal source via a menu.
+ *            - Supports reading audio from a WAV file, generating sine waves, chords, and noise signals.
+ *            - Each signal type supports parameter customization (sample rate, frequency, duration, amplitude, etc.).
+ *            - Returns a tuple containing audio data, a description string, and the sample rate.
+ * @author    Erick 
+ * @date      2025.5
+ */
+
+
 #include "signal_source.h"
 #include "wav_processor.h"
 #include "sim_signal.h"
 #include <iostream>
 
 std::tuple<std::vector<double>, std::string, int> SignalSource::getSignal() {
-    // Display menu for signal source selection
-    std::cout << "Select signal source:" << std::endl;
-    std::cout << "1. WAV file" << std::endl;
-    std::cout << "2. Sine wave" << std::endl;
-    std::cout << "3. Chord" << std::endl;
-    std::cout << "4. Noise" << std::endl;
+    
+    int choice = 0;
 
-    int choice;
-    std::cin >> choice;
-    std::cin.ignore(); // Clear input buffer
+    //std::cin >> choice;
+    //std::cin.ignore(); // Clear input buffer
 
-    // Call appropriate method based on user selection
+    
     switch (choice - 1) {
     case WAV_FILE:
         return getWavSignal("D:\\Users\\Desktop\\dataset\\GuitarChord\\chord1.0\\major\\B_major.wav");
     case SINE_WAVE:
         return getSineWave();
-    case CHORD:
-        return getChord();
-    case NOISE:
-        return getNoise();
     default:
         std::cerr << "Invalid choice" << std::endl;
         return std::make_tuple(std::vector<double>(), "Invalid", 0);
@@ -50,4 +54,45 @@ std::tuple<std::vector<double>, std::string, int> SignalSource::getWavSignal(con
     return std::make_tuple(audioData, "WAV File: " + filename, header.sampleRate);
 }
 
-// Add implementations for other methods (getSineWave, getChord, getNoise)
+
+
+// Implementation of getSineWave
+std::tuple<std::vector<double>, std::string, int> SignalSource::getSineWave() {
+    double frequency, duration, amplitude = 1.0;
+    int sampleRate;
+
+    std::cout << "Enter sample rate (e.g., 44100): ";
+    std::cin >> sampleRate;
+    std::cout << "Enter frequency (Hz): ";
+    std::cin >> frequency;
+    std::cout << "Enter duration (sec): ";
+    std::cin >> duration;
+    std::cout << "Enter amplitude (default 1.0): ";
+    std::cin >> amplitude;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+    auto signal = generateSineWave(sampleRate, frequency, duration, amplitude);
+    std::string desc = "Sine Wave: " + std::to_string(frequency) + "Hz, " + std::to_string(duration) + "s";
+    return std::make_tuple(signal, desc, sampleRate);
+}
+
+
+// Implementation of getNoise
+std::tuple<std::vector<double>, std::string, int> SignalSource::getNoise() {
+    int sampleRate;
+    double duration, amplitude = 0.5;
+
+    std::cout << "Enter sample rate (e.g., 44100): ";
+    std::cin >> sampleRate;
+    std::cout << "Enter duration (sec): ";
+    std::cin >> duration;
+    std::cout << "Enter amplitude (default 0.5): ";
+    std::cin >> amplitude;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+    int numSamples = static_cast<int>(sampleRate * duration);
+    auto signal = generateNoiseSignal(numSamples, amplitude);
+
+    std::string desc = "Noise: " + std::to_string(duration) + "s";
+    return std::make_tuple(signal, desc, sampleRate);
+}

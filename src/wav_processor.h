@@ -5,27 +5,25 @@
 #include <string>
 #include <cstdint>
 
-// WAV文件头结构
+// WAV file header structure
 struct WAVHeader {
-    char riff[4];           // RIFF标志
-    int32_t chunkSize;      // 文件大小 -8
-    char wave[4];           // WAVE标志
-    char fmt[4];            // fmt 标志
-    int32_t subchunk1Size;  // Subchunk1大小:16
-    int16_t audioFormat;    // 音频格式: PCM = 1
-    int16_t numChannels;    // 通道数
-    int32_t sampleRate;     // 采样率
-    int32_t byteRate;       // 字节率
-    int16_t blockAlign;     // 块对齐
-    int16_t bitsPerSample;  // 每个采样点的位数
-    char data[4];           // "data" 标志
-    int32_t dataSize;       // 音频数据的总字节数
+    char riff[4];           // RIFF identifier
+    int32_t chunkSize;      // File size - 8 bytes
+    char wave[4];           // WAVE identifier
+    char fmt[4];            // fmt identifier
+    int32_t subchunk1Size;  // Subchunk1 size: usually 16 for PCM
+    int16_t audioFormat;    // Audio format: PCM = 1
+    int16_t numChannels;    // Number of channels
+    int32_t sampleRate;     // Sample rate
+    int32_t byteRate;       // Byte rate
+    int16_t blockAlign;     // Block align
+    int16_t bitsPerSample;  // Bits per sample
+    char data[4];           // "data" identifier
+    int32_t dataSize;       // Total number of bytes in audio data
 };
 
 
 std::vector<double> readWAV(const std::string& filename, WAVHeader& header);
 void processSignal(std::vector<float>& signal);
-
-
 
 #endif // WAV_PROCESSOR_H

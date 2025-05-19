@@ -11,7 +11,7 @@
 
 ## 主要功能
 
-- **模块化输入系统**：可通过菜单选择信号类型（WAV、正弦波、和弦、噪声）
+- **模块化输入系统**：可通过菜单选择信号类型（WAV、正弦波）
 - **合成信号生成模块**：可生成测试用的正弦波、和弦、噪声信号
 - **支持 WAV 文件**：可读取并分析标准 .wav 音频文件
 - **分块缓冲处理**：以固定缓冲区大小分段处理大信号
@@ -43,7 +43,10 @@
 
 ### 1. **编译工程**
 
-请确保你的编译器支持至少 C++11（如需结构化绑定则需 C++17）。  
+请确保你的编译器至少支持 C++17
 **示例编译命令（GCC/Clang）：**
+
 ```sh
-g++ main.cpp signal_source.cpp signal_processor.cpp sim_signal.cpp wav_processor.cpp -std=c++11 -o audio_processor
+g++ main.cpp signal_source.cpp signal_processor.cpp sim_signal.cpp wav_processor.cpp -std=c++17 -o audio_processor
+
+```
